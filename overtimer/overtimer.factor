@@ -39,6 +39,6 @@ CONSTANT: overtime-per-day 2
 
 MAIN: [
     21.50          ! Target
-    33.50 2 +      ! Current + Today
+    36.50 1.5 +    ! Current + Today
     run-overtimer
 ]
