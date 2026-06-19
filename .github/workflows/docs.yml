@@ -19,6 +19,14 @@ jobs:
       - name: Generate HTML Documentation
         run: ./factor/factor -roots=$(pwd) -script build-docs.factor
 
+      - name: Show generated docs
+        run: |
+          echo "Listing workspace root"
+          pwd
+          ls -la
+          echo "Listing docs (if present)"
+          if [ -d "docs" ]; then ls -la docs; else echo "docs directory not found"; exit 1; fi
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
