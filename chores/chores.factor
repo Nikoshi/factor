@@ -1,16 +1,22 @@
-USING: accessors assocs combinators formatting http http.json
-kernel namespaces sequences ;
+USING: accessors assocs combinators continuations formatting http
+http.json kernel namespaces sequences ;
 
 IN: chores
 
-SYMBOL: APIKEY
+SYMBOL: API-KEY
+CONSTANT: API-URL "http://localhost:9283/api/chores"
+
+ERROR: missing-api-key ;
 
 TUPLE: chore id name next-execution ;
 C: <chore> chore
 
+: check-api-key ( -- key )
+    API-KEY get [ missing-api-key ] unless* ;
+
 : authenticated-json-get ( url -- json )
     "GET" <json-request>
-    APIKEY get "GROCY-API-KEY" set-header
+    check-api-key "GROCY-API-KEY" set-header
     accept-json http-json ;
 
 : convert-chore ( assoc -- chore )
@@ -19,9 +25,9 @@ C: <chore> chore
     [ "next_estimated_execution_time" of ] tri <chore> ;
 
 : get-chores ( -- chores )
-    "http://localhost:9283/api/chores" authenticated-json-get 
+    API-URL authenticated-json-get 
     [ convert-chore ] map ;
 
 : print-chore ( chore -- )
-    [ id>> ] [ next-execution>> ] [ name>> ] tri
-    "%d. %s: %s\n" printf ;
+    [ id>> ] [ name>> ] [ next-execution>> ] tri
+    "%d. %-20s: %s\n" printf ;
