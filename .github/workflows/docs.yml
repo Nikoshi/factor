@@ -1,0 +1,28 @@
+name: Build Factor Docs
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Factor
+        run: |
+          wget https://downloads.factorcode.org/releases/0.101/factor-linux-x86-64-0.101.tar.gz
+          tar -xzf factor-linux-x86-64-0.101.tar.gz
+
+      - name: Generate HTML Documentation
+        run: ./factor/factor -roots=$(pwd) -script build-docs.factor
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./docs
+          keep_files: false
