@@ -14,6 +14,9 @@ IN: zplprinter
 : get-nested ( assoc keys -- value/f )
     [ safe-at ] each ;
 
+: with-console ( quot -- )
+    output-stream get-global swap with-output-stream* ; inline
+
 PRIVATE>
 
 ! --- ZPL-Template-Logik ---
@@ -83,7 +86,7 @@ PRIVATE>
     <response> 200 >>code "Printed" "text/plain" <content> >>body ;
 
 : respond-bad ( err-msg -- response )
-    "Error: " prepend print flush
+    [ "Error: " prepend print flush ] with-console
     <response> 400 >>code "Invalid data" "text/plain" <content> >>body ;
 
 : parse-request-payload ( -- assoc/f )
@@ -92,24 +95,26 @@ PRIVATE>
 ! Eine Zeile pro Webhook loggen für Nachverfolgung.
 ! Format stabil halten zum einfachen Durchsuchen von Logs.
 :: log-webhook-call ( data -- )
-    "Processing label for: " write
-    data { "Product" } get-nested [ present ] [ "<unknown>" ] if* print
-    " (Grocycode: " write
-    data { "Grocycode" } get-nested [ present ] [ "<unknown>" ] if* print
-    ")" print flush ;
+    [
+        "Processing label for: " write
+        data { "Product" } get-nested [ present ] [ "<unknown>" ] if* print
+        " (Grocycode: " write
+        data { "Grocycode" } get-nested [ present ] [ "<unknown>" ] if* print
+        ")" print flush
+    ] with-console ;
 
 ! Verarbeitung von Logging separieren, damit Tests das Rendering
 ! unabhängig von Seiteneffekten (Socket-Senden) testen können.
 : process-label-payload ( assoc -- response )
     dup log-webhook-call
     label>zpl send-zpl-to-printer
-    "Successfully sent to printer." print flush
+    [ "Successfully sent to printer." print flush ] with-console
     respond-ok ;
 
 TUPLE: webhook-action ;
 M: webhook-action call-responder* ( path responder -- response )
     2drop
-    "--- New Webhook Call --- " write current-utc-timestamp print "\n" print flush
+    [ "--- New Webhook Call --- " write current-utc-timestamp print "\n" print flush ] with-console
     parse-request-payload
     [ process-label-payload ] 
     [ "No or invalid JSON data." respond-bad ] if* ;
@@ -120,6 +125,6 @@ M: webhook-action call-responder* ( path responder -- response )
 : start-server ( -- )
     "Starting Webhook-Receiver on port 8080..." print flush
     webhook-action new main-responder set-global
-    8080 httpd wait-for-server ;
+    5000 httpd wait-for-server ;
 
 MAIN: start-server
