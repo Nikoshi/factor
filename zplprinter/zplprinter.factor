@@ -128,6 +128,6 @@ M: webhook-action call-responder* ( path responder -- response )
     "Starting Webhook-Receiver on port 8080..." print flush
     output-stream get server-console set-global  ! <-- Hier den Stream für Threads speichern
     webhook-action new main-responder set-global
-    8080 httpd wait-for-server ;
+    5000 httpd wait-for-server ;
 
 MAIN: start-zpl-server
