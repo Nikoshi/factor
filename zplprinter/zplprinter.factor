@@ -3,6 +3,8 @@ io io.encodings.utf8 io.servers io.sockets json kernel make math namespaces pres
 
 IN: zplprinter
 
+SYMBOL: server-console
+
 <PRIVATE
 ! Robuste Hilfsfunktionen für Payload-Verarbeitung:
 ! Warum: Webhooks können Felder auslassen oder unterschiedliche Strukturen haben.
@@ -15,7 +17,7 @@ IN: zplprinter
     [ safe-at ] each ;
 
 : with-console ( quot -- )
-    output-stream get-global swap with-output-stream* ; inline
+    server-console get-global swap with-output-stream* ; inline
 
 PRIVATE>
 
@@ -122,9 +124,10 @@ M: webhook-action call-responder* ( path responder -- response )
 ! --- Start / CLI ---
 ! Einstiegspunkt: startet den HTTP-Server zum Empfang von Webhooks.
 
-: start-server ( -- )
+: start-zpl-server ( -- )
     "Starting Webhook-Receiver on port 8080..." print flush
+    output-stream get server-console set-global  ! <-- Hier den Stream für Threads speichern
     webhook-action new main-responder set-global
-    5000 httpd wait-for-server ;
+    8080 httpd wait-for-server ;
 
-MAIN: start-server
+MAIN: start-zpl-server
