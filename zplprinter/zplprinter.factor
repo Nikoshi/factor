@@ -1,7 +1,7 @@
 USING: accessors assocs combinators formatting http http.server http.server.responses 
 io io.encodings.utf8 io.servers io.sockets json kernel make math namespaces present sequences calendar calendar.format ;
 
-IN: webhook-printer
+IN: zplprinter
 
 <PRIVATE
 ! Robuste Hilfsfunktionen für Payload-Verarbeitung:
