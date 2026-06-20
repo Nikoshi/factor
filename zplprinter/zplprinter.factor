@@ -55,7 +55,6 @@ PRIVATE>
 
 :: label>zpl ( data -- zpl )
     [
-        :> data
         data %header
         data %product
         data %price
@@ -102,14 +101,14 @@ PRIVATE>
 ! Verarbeitung von Logging separieren, damit Tests das Rendering
 ! unabhängig von Seiteneffekten (Socket-Senden) testen können.
 : process-label-payload ( assoc -- response )
-    log-webhook-call
+    dup log-webhook-call
     label>zpl send-zpl-to-printer
     "Successfully sent to printer." print flush
     respond-ok ;
 
 TUPLE: webhook-action ;
-M: webhook-action call-responder* ( responder -- response )
-    drop
+M: webhook-action call-responder* ( path responder -- response )
+    2drop
     "--- New Webhook Call --- " write current-utc-timestamp print "\n" print flush
     parse-request-payload
     [ process-label-payload ] 
