@@ -10,17 +10,17 @@ The zplprinter vocabulary provides a simple HTTP webhook endpoint that accepts J
 
 ### Core Vocabularies
 
-- `webhook-printer` — Main implementation
+- `zplprinter` — Main implementation
   - Robust payload parsing with fallback for missing fields
   - ZPL rendering pipeline with composable template fragments
   - HTTP webhook responder using Factor's http.server
 
-- `webhook-printer.tests` — Unit tests
+- `zplprinter.tests` — Unit tests
   - Tests for rendering (`label>zpl`)
   - Tests for response generation (`respond-ok`, `respond-bad`)
   - Tests for helper functions (`get-nested`, `current-utc-timestamp`)
 
-- `webhook-printer.dev` — Development utilities
+- `zplprinter.dev` — Development utilities
   - `start-dev-server` — Start server in background thread for F2-refresh workflow
   - `stop-dev-server` — Stop the background server thread
   - `dev-server-running?` — Check server status
@@ -55,8 +55,8 @@ Missing fields are handled gracefully and rendered as `<unknown>` in logs.
 Start the webhook receiver on port 8080:
 
 ```factor
-USE: webhook-printer ;
-start-server
+USE: zplprinter ;
+start-zpl-server
 ```
 
 The server will listen for HTTP POST requests and forward rendered ZPL to the printer.
@@ -115,7 +115,8 @@ zplprinter/
   zplprinter.factor           — Main implementation
   zplprinter-docs.factor      — API documentation
   zplprinter-tests.factor     — Unit tests
-  zplprinter-dev.factor       — Development utilities
-  zplprinter-dev-docs.factor  — Dev utility documentation
+  dev/
+    dev.factor                — Development utilities
+    dev-docs.factor           — Dev utility documentation
   README.md                   — This file
 ```
