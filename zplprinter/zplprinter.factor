@@ -28,31 +28,31 @@ PRIVATE>
 <PRIVATE
 
 : %header ( data -- )
-    "^XA\n^CI28\n^CF0,60\n^FO65,100^BXN,7,200,,,6,~,1^FD" %
+    "^XA\n^CI28\n" %
     { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
 
 : %product ( data -- )
-    { "product" } get-nested 
-    [ "^FO250,50^FD" % present % "^FS\n^CF0,30\n" % ] when* ;
+    { "product" } get-nested   ! TODO: Show Amount As Well
+    [ "^CF0,50^FO50,50^FD" % present % "^FS ^FO700,50^FD" % "N/A" % "^FS\n" % ] when* ;
 
 : %price ( data -- )
     { "details" "avg_price" } get-nested 
-    [ "^FO250,115^FDDurchschnittspreis: " % present % "^FS\n" % ] when* ;
+    [ "^CF0,30^FO50,115^FDDurchschnittspreis: " % present % "^FS\n" % ] when* ;
 
 : %stock ( data -- )
     dup { "details" "product" "min_stock_amount" } get-nested [
         dup 0 > [
-            "^FO250,155^FDMin Stock: " % present % " " %
+            "^FO50,155^FDMin Stock: " % present % " " %
             { "details" "quantity_unit_stock" "name" } get-nested [ present % ] when* "^FS\n" %
         ] [ 2drop ] if
     ] [ drop ] if* ;
 
 : %move-on-open ( data -- )
     { "details" "product" "move_on_open" } get-nested 
-    [ 1 = [ "^FO250,235^FDMove On Open^FS\n" % ] when ] when* ;
+    [ 1 = [ "^FO50,235^FDMove On Open^FS\n" % ] when ] when* ;
 
-: %barcode ( data -- )
-    "^FO50,300^GB700,3,3^FS\n^BY4,2,250\n^FO100,350^BC^FD" %
+: %barcode ( data -- )  ! TODO: The X-Start of the barcode depends on the length of the code (to center it)
+    "^FO50,275^GB650,3,3^FS\n^BY2,2,225\n^FO50,315^BC^FD" %
     { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
 
 : %footer ( -- )
@@ -102,9 +102,6 @@ PRIVATE>
 ! Eine Zeile pro Webhook loggen für Nachverfolgung.
 ! Format stabil halten zum einfachen Durchsuchen von Logs.
 :: log-webhook-call ( data -- )
-    [ 
-        "DEBUG-JSON: " write data . 
-    ] with-console
     [
         "Processing label for: " write
         data { "product" } get-nested [ present write ] [ "kein Produkt" write ] if*
