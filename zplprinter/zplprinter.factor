@@ -29,31 +29,31 @@ PRIVATE>
 
 : %header ( data -- )
     "^XA\n^CI28\n^CF0,60\n^FO65,100^BXN,7,200,,,6,~,1^FD" %
-    { "Grocycode" } get-nested [ present % ] when* "^FS\n" % ;
+    { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
 
 : %product ( data -- )
-    { "Product" } get-nested 
+    { "product" } get-nested 
     [ "^FO250,50^FD" % present % "^FS\n^CF0,30\n" % ] when* ;
 
 : %price ( data -- )
-    { "Details" "AvgPrice" } get-nested 
+    { "details" "avg_price" } get-nested 
     [ "^FO250,115^FDDurchschnittspreis: " % present % "^FS\n" % ] when* ;
 
 : %stock ( data -- )
-    dup { "Details" "Product" "MinStockAmount" } get-nested [
+    dup { "details" "product" "min_stock_amount" } get-nested [
         dup 0 > [
             "^FO250,155^FDMin Stock: " % present % " " %
-            { "Details" "QuantityUnitStock" "Name" } get-nested [ present % ] when* "^FS\n" %
+            { "details" "quantity_unit_stock" "name" } get-nested [ present % ] when* "^FS\n" %
         ] [ 2drop ] if
     ] [ drop ] if* ;
 
 : %move-on-open ( data -- )
-    { "Details" "Product" "MoveOnOpen" } get-nested 
+    { "details" "product" "move_on_open" } get-nested 
     [ 1 = [ "^FO250,235^FDMove On Open^FS\n" % ] when ] when* ;
 
 : %barcode ( data -- )
     "^FO50,300^GB700,3,3^FS\n^BY4,2,250\n^FO100,350^BC^FD" %
-    { "Grocycode" } get-nested [ present % ] when* "^FS\n" % ;
+    { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
 
 : %footer ( -- )
     "^XZ\n" % ;
@@ -92,16 +92,24 @@ PRIVATE>
     <response> 400 >>code "Invalid data" "text/plain" <content> >>body ;
 
 : parse-request-payload ( -- assoc/f )
-    request get post-data>> [ json> ] [ f ] if* ;
+    request get [
+        data>> [
+            ! JSON-String extrahieren (je nach Webhook-Struktur)
+            data>> [ [ json> ] ignore-errors ] [ f ] if*
+        ] [ f ] if*
+    ] [ f ] if* ;
 
 ! Eine Zeile pro Webhook loggen für Nachverfolgung.
 ! Format stabil halten zum einfachen Durchsuchen von Logs.
 :: log-webhook-call ( data -- )
+    [ 
+        "DEBUG-JSON: " write data . 
+    ] with-console
     [
         "Processing label for: " write
-        data { "Product" } get-nested [ present ] [ "<unknown>" ] if* print
+        data { "product" } get-nested [ present write ] [ "kein Produkt" write ] if*
         " (Grocycode: " write
-        data { "Grocycode" } get-nested [ present ] [ "<unknown>" ] if* print
+        data { "grocycode" } get-nested [ present write ] [ "kein Code" write ] if*
         ")" print flush
     ] with-console ;
 
