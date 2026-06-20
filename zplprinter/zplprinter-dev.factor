@@ -6,11 +6,11 @@ SYMBOL: dev-server-thread
 
 ! F2-Refresh im Listener ohne Server-Neustart ist nur möglich mit separatem Thread.
 :: start-dev-server ( port -- )
-    "Dev server started on port " write port write "..." print flush
+    "Dev server started on port " write port present write "..." print flush
     [
         webhook-action new main-responder set-global
         port httpd wait-for-server
-    ] spawn dev-server-thread set-global ;
+    ] "dev-server" spawn dev-server-thread set-global ;
 
 : stop-dev-server ( -- )
     dev-server-thread get-global [
@@ -27,6 +27,4 @@ SYMBOL: dev-server-thread
 : dev-server-running? ( -- ? )
     dev-server-thread get-global [
         runnable>>
-    ] [ f ] if ;
-
-ABOUT: "zplprinter.dev"
+    ] [ f ] if* ;
