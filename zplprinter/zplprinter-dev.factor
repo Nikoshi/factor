@@ -1,4 +1,4 @@
-USING: threads namespaces zplprinter io http.server ;
+USING: accessors threads namespaces zplprinter io http.server ;
 
 IN: zplprinter.dev
 
@@ -13,17 +13,20 @@ SYMBOL: dev-server-thread
     ] spawn dev-server-thread set-global ;
 
 : stop-dev-server ( -- )
-    dev-server-thread get-global dup [
+    dev-server-thread get-global [
         "Stopping dev server..." print flush
         stop
+        f dev-server-thread set-global
     ] [
         "No dev server running." print flush
-    ] if ;
+    ] if* ;
 
 ! Warum Status checken? Um zu vermeiden, den Server doppelt zu starten.
+
+
 : dev-server-running? ( -- ? )
     dev-server-thread get-global [
-        thread-state "running" =
+        runnable>>
     ] [ f ] if ;
 
 ABOUT: "zplprinter.dev"
