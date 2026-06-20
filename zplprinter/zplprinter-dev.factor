@@ -1,4 +1,4 @@
-USING: threads namespaces webhook-printer io http.server ;
+USING: threads namespaces zplprinter io http.server ;
 
 IN: zplprinter.dev
 
