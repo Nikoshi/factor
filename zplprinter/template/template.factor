@@ -1,0 +1,45 @@
+USING: combinators formatting kernel make math present sequences zplprinter.utils ;
+
+IN: zplprinter.template
+
+: %header ( data -- )
+    "^XA\n^CI28\n" %
+    { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
+
+: %product ( data -- )
+    { "product" } get-nested
+    [ "^CF0,50^FO50,50^FD" % present % "^FS ^FO700,50^FD" % "N/A" % "^FS\n" % ] when* ;
+
+: %price ( data -- )
+    { "details" "avg_price" } get-nested
+    [ "^CF0,30^FO50,115^FDDurchschnittspreis: " % present % "^FS\n" % ] when* ;
+
+: %stock ( data -- )
+    dup { "details" "product" "min_stock_amount" } get-nested [
+        dup 0 > [
+            "^FO50,155^FDMin Stock: " % present % " " %
+            { "details" "quantity_unit_stock" "name" } get-nested [ present % ] when* "^FS\n" %
+        ] [ 2drop ] if
+    ] [ drop ] if* ;
+
+: %move-on-open ( data -- )
+    { "details" "product" "move_on_open" } get-nested
+    [ 1 = [ "^FO50,235^FDMove On Open^FS\n" % ] when ] when* ;
+
+: %barcode ( data -- )
+    "^FO50,275^GB650,3,3^FS\n^BY2,2,225\n^FO50,315^BC^FD" %
+    { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
+
+: %footer ( -- )
+    "^XZ\n" % ;
+
+:: label>zpl ( data -- zpl )
+    [
+        data %header
+        data %product
+        data %price
+        data %stock
+        data %move-on-open
+        data %barcode
+        %footer
+    ] "" make ;

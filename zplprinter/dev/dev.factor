@@ -1,4 +1,4 @@
-USING: accessors threads namespaces zplprinter io http.server ;
+USING: accessors threads namespaces zplprinter zplprinter.server io http.server ;
 
 IN: zplprinter.dev
 
@@ -8,6 +8,8 @@ SYMBOL: dev-server-thread
 :: start-dev-server ( port -- )
     "Dev server started on port " write port present write "..." print flush
     [
+        output-stream get server-console set-global
+        [ process-label-payload ] payload-handler set-global
         webhook-action new main-responder set-global
         port httpd wait-for-server
     ] "dev-server" spawn dev-server-thread set-global ;
