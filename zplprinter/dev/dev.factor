@@ -1,5 +1,5 @@
-USING: accessors threads namespaces zplprinter zplprinter.server io http.server ;
-
+USING: accessors http.server io io.servers kernel namespaces
+present threads zplprinter zplprinter.server ;
 IN: zplprinter.dev
 
 SYMBOL: dev-server-thread
