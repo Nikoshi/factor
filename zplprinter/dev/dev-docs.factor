@@ -18,13 +18,13 @@ HELP: start-dev-server
 { $description "Startet den Webhook-Server auf dem angegebenen Port in einem separaten Thread (benannt \"dev-server\")." }
 { $examples
     { $code "8080 start-dev-server" }
-}
+} ;
 
 HELP: stop-dev-server
-{ $description "Stoppt den laufenden Dev-Server-Thread und leert die zugehörige globale Variable." }
+{ $description "Stoppt den laufenden Dev-Server-Thread und leert die zugehörige globale Variable." } ;
 
 HELP: dev-server-running?
 { $values { "?" "boolean" } }
-{ $description "Prüft den Status des Dev-Server-Threads und gibt zurück, ob dieser aktuell lauffähig ist." }
+{ $description "Prüft den Status des Dev-Server-Threads und gibt zurück, ob dieser aktuell lauffähig ist." } ;
 
 ABOUT: "zplprinter.dev"
