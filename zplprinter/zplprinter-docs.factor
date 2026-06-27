@@ -1,4 +1,5 @@
 USING: help.markup help.syntax zplprinter zplprinter.client zplprinter.server zplprinter.template zplprinter.utils ;
+IN: zplprinter
 
 ARTICLE: "zplprinter" "ZPL Printer Orchestration"
 "Das Root-Vokabular bündelt nur die Anwendungsschicht und verdrahtet die Fachvokabulare zur ausführbaren Webhook-Lösung."
