@@ -6,7 +6,7 @@ ARTICLE: "zplprinter.client" "ZPL Printer Client"
 "TCP-Kommunikation mit dem lokalen Drucker."
 { $subsections
     send-zpl-to-printer
-}
+} ;
 
 HELP: send-zpl-to-printer
 { $values { "zpl" "string" } }
