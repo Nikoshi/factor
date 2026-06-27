@@ -1,6 +1,6 @@
-USING: http http.server.dispatchers io namespaces
-zplprinter.client zplprinter.server zplprinter.template ;
-
+USING: http http.server http.server.dispatchers io io.servers
+kernel namespaces zplprinter.client zplprinter.server
+zplprinter.template ;
 IN: zplprinter
 
 : process-label-payload ( assoc -- response )
