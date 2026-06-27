@@ -1,6 +1,6 @@
 USING: accessors calendar calendar.format continuations
 formatting http http.server http.server.responses io json kernel
-namespaces present sequences zplprinter.utils ;
+namespaces present sequences zplprinter.utils multiline ;
 IN: zplprinter.server
 
 SYMBOL: server-console
@@ -35,59 +35,60 @@ SYMBOL: payload-handler
         ")" print flush
     ] with-console ;
 
-: test-form-html ( -- string )
-    "<!DOCTYPE html>
-    <html lang='de'>
-    <head>
-        <meta charset='UTF-8'>
-        <title>ZPL Printer Testformular</title>
-        <style>
-            body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
-            textarea { white-space: pre; font-family: monospace; width: 100%; height: 250px; }
-            button { padding: 10px 20px; background: #0066cc; color: white; border: none; cursor: pointer; }
-            pre { background: #f0f0f0; padding: 10px; border-radius: 4px; }
-        </style>
-    </head>
-    <body>
-        <h1>ZPL Test-Payload senden</h1>
-        <textarea id='jsonPayload'>{
-  \"product\": \"Testprodukt\",
-  \"grocycode\": \"1234567890\",
-  \"details\": {
-    \"avg_price\": 1.49,
-    \"product\": {
-      \"min_stock_amount\": 3,
-      \"move_on_open\": 1
+STRING: test-form-html
+<!DOCTYPE html>
+<html lang='de'>
+<head>
+    <meta charset='UTF-8'>
+    <title>ZPL Printer Testformular</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        textarea { white-space: pre; font-family: monospace; width: 100%; height: 250px; }
+        button { padding: 10px 20px; background: #0066cc; color: white; border: none; cursor: pointer; }
+        pre { background: #f0f0f0; padding: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>ZPL Test-Payload senden</h1>
+    <textarea id='jsonPayload'>{
+  "product": "Testprodukt",
+  "grocycode": "1234567890",
+  "details": {
+    "avg_price": 1.49,
+    "product": {
+      "min_stock_amount": 3,
+      "move_on_open": 1
     },
-    \"quantity_unit_stock\": {
-      \"name\": \"Stück\"
+    "quantity_unit_stock": {
+      "name": "Stück"
     }
   }
 }</textarea>
-        <br><br>
-        <button onclick='sendTest()'>Payload an API senden</button>
-        <h3>Server-Antwort (/):</h3>
-        <pre id='response'>-</pre>
+    <br><br>
+    <button onclick='sendTest()'>Payload an API senden</button>
+    <h3>Server-Antwort (/):</h3>
+    <pre id='response'>-</pre>
 
-        <script>
-            async function sendTest() {
-                const resBox = document.getElementById('response');
-                resBox.innerText = 'Sende...';
-                try {
-                    const response = await fetch('/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: document.getElementById('jsonPayload').value
-                    });
-                    const text = await response.text();
-                    resBox.innerText = `HTTP ${response.status}: ${text}`;
-                } catch (err) {
-                    resBox.innerText = 'Verbindungfehler: ' + err.message;
-                }
+    <script>
+        async function sendTest() {
+            const resBox = document.getElementById('response');
+            resBox.innerText = 'Sende...';
+            try {
+                const response = await fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: document.getElementById('jsonPayload').value
+                });
+                const text = await response.text();
+                resBox.innerText = `HTTP ${response.status}: ${text}`;
+            } catch (err) {
+                resBox.innerText = 'Verbindungfehler: ' + err.message;
             }
-        </script>
-    </body>
-    </html>" ;
+        }
+    </script>
+</body>
+</html>
+;
 
 : respond-html ( html -- response )
     <response> 200 >>code swap "text/html; charset=utf-8" <content> >>body ;
@@ -106,3 +107,4 @@ M: webhook-action call-responder* ( path responder -- response )
         dup log-webhook-call
         payload-handler get-global [ call( assoc -- response ) ] [ drop "No payload handler configured." respond-bad ] if*
     ] [ "No or invalid JSON data." respond-bad ] if* ;
+    
