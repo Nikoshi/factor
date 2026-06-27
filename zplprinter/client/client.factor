@@ -1,5 +1,4 @@
-USING: io.encodings.utf8 io.sockets ;
-
+USING: io io.encodings.utf8 io.sockets ;
 IN: zplprinter.client
 
 : send-zpl-to-printer ( zpl -- )
