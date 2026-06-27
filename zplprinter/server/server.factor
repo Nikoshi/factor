@@ -104,5 +104,5 @@ M: webhook-action call-responder* ( path responder -- response )
     parse-request-payload
     [
         dup log-webhook-call
-        payload-handler get-global [ call ] [ drop "No payload handler configured." respond-bad ] if*
+        payload-handler get-global [ call( assoc -- response ) ] [ drop "No payload handler configured." respond-bad ] if*
     ] [ "No or invalid JSON data." respond-bad ] if* ;
