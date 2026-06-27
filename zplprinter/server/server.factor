@@ -1,5 +1,6 @@
-USING: calendar calendar.format formatting http http.server http.server.responses io json namespaces present zplprinter.utils ;
-
+USING: accessors calendar calendar.format continuations
+formatting http http.server http.server.responses io json kernel
+namespaces present sequences zplprinter.utils ;
 IN: zplprinter.server
 
 SYMBOL: server-console
