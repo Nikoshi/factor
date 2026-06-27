@@ -3,14 +3,14 @@ USING: help.markup help.syntax zplprinter zplprinter.client zplprinter.server zp
 ARTICLE: "zplprinter" "ZPL Printer Orchestration"
 "Das Root-Vokabular bündelt nur die Anwendungsschicht und verdrahtet die Fachvokabulare zur ausführbaren Webhook-Lösung."
 { $heading "Aufteilung" }
-"Die eigentliche Fachlogik liegt in " { $link "zplprinter.utils" } ", " { $link "zplprinter.template" } ", " { $link "zplprinter.client" } " und " { $link "zplprinter.server" } "."
+"Die eigentliche Fachlogik liegt in " { $vocab-link "zplprinter.utils" } ", " { $vocab-link "zplprinter.template" } ", " { $vocab-link "zplprinter.client" } " und " { $vocab-link "zplprinter.server" } "."
 { $heading "Laufzeit" }
-"" { $link "process-label-payload" } " bildet die Orchestrierung für eingehende Payloads, " { $link "start-zpl-server" } " startet den HTTP-Server auf Port 5000."
+{ $link process-label-payload } " bildet die Orchestrierung für eingehende Payloads, " { $link start-zpl-server } " startet den HTTP-Server auf Port 5000."
 { $heading "Kernfunktionen" }
 { $subsections
     process-label-payload
     start-zpl-server
-}
+} ;
 
 HELP: process-label-payload
 { $values { "assoc" "assoc" } { "response" "response" } }
@@ -18,9 +18,9 @@ HELP: process-label-payload
 { $examples
     "Eine Payload verarbeiten und Antwort erhalten:"
     { $code "H{ { \"product\" \"Test\" } { \"grocycode\" \"123\" } } process-label-payload" }
-}
+} ;
 
 HELP: start-zpl-server
-{ $description "Startet den Webhook-Receiver auf Port 5000 und setzt dabei den gemeinsamen Server-Kontext der neuen Aufteilung." }
+{ $description "Startet den Webhook-Receiver auf Port 5000 und setzt dabei den gemeinsamen Server-Kontext der neuen Aufteilung." } ;
 
 ABOUT: "zplprinter"
