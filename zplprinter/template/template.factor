@@ -27,7 +27,7 @@ IN: zplprinter.template
     ] [ drop ] if* ;
 
 : %mhd ( data -- )
-    "^FO50,195,FD" %
+    "^FO50,195^FD" %
     { "due_date" } get-nested [ present % ] when* "^FS\n" % ;
 
 : %move-on-open ( data -- )
