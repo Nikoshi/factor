@@ -13,11 +13,11 @@ SYMBOL: payload-handler
     now-utc timestamp>rfc3339 ;
 
 : respond-ok ( -- response )
-    <response> 200 >>code "Printed" "text/plain" <content> >>body ;
+    <response> 200 >>code "text/plain" >>content-type "Printed" >>body ;
 
 : respond-bad ( err-msg -- response )
     [ "Error: " prepend print flush ] with-console
-    <response> 400 >>code "Invalid data" "text/plain" <content> >>body ;
+    <response> 400 >>code "text/plain" >>content-type "Invalid data" >>body ;
 
 : parse-request-payload ( -- assoc/f )
     request get [
@@ -91,7 +91,7 @@ STRING: test-form-html
 ;
 
 : respond-html ( html -- response )
-    <response> 200 >>code swap "text/html; charset=utf-8" <content> >>body ;
+    <response> 200 >>code "text/html; charset=utf-8" >>content-type swap >>body ;
 
 TUPLE: test-form-action ;
 TUPLE: webhook-action ;
