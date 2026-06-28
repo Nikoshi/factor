@@ -1,6 +1,8 @@
 USING: accessors calendar calendar.format continuations
-formatting http http.server http.server.responses io json kernel
-namespaces present sequences zplprinter.utils multiline ;
+formatting http http.server http.server.responses io
+io.encodings.latin1 io.encodings.string io.encodings.utf8 json
+kernel multiline namespaces present sequences strings
+zplprinter.utils ;
 IN: zplprinter.server
 
 SYMBOL: server-console
