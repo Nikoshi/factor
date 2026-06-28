@@ -22,7 +22,11 @@ SYMBOL: payload-handler
 : parse-request-payload ( -- assoc/f )
     request get [
         data>> [
-            data>> [ [ json> ] ignore-errors ] [ f ] if*
+            data>> [
+                dup string? [ latin1 encode ] when
+                utf8 decode
+                [ json> ] ignore-errors
+            ] [ f ] if*
         ] [ f ] if*
     ] [ f ] if* ;
 
