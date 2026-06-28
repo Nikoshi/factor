@@ -27,8 +27,8 @@ IN: zplprinter.template
     ] [ drop ] if* ;
 
 : %mhd ( data -- )
-    { "due_date" } get-nested
-    [ "^FO50,195^FD" % present % "^FS\n" ] when* ;
+    "^FO50,195,FD" %
+    { "due_date" } get-nested [ present % ] when* "^FS\n" % ;
 
 : %move-on-open ( data -- )
     { "details" "product" "move_on_open" } get-nested
