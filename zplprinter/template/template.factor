@@ -9,6 +9,7 @@ IN: zplprinter.template
 : %product ( data -- )
     { "product" } get-nested
     [ "^CF0,50^FO50,50^FD" % present % "^FS ^FO700,50^FD" % "N/A" % "^FS\n" % ] when* ;
+
 : %price ( data -- )
     { "details" "avg_price" } get-nested
     [
@@ -24,6 +25,10 @@ IN: zplprinter.template
             { "details" "quantity_unit_stock" "name" } get-nested [ present % ] when* "^FS\n" %
         ] [ 2drop ] if
     ] [ drop ] if* ;
+
+: %mhd ( data -- )
+    { "due_date" } get-nested
+    [ "^FO50,195^FD" % present % "^FS\n"] when* ;
 
 : %move-on-open ( data -- )
     { "details" "product" "move_on_open" } get-nested
@@ -42,6 +47,7 @@ IN: zplprinter.template
         data %product
         data %price
         data %stock
+        data %mhd
         data %move-on-open
         data %barcode
         %footer
