@@ -1,6 +1,5 @@
 USING: accessors calendar calendar.format continuations
-formatting http http.server http.server.responses io
-io.encodings.latin1 io.encodings.string io.encodings.utf8 json
+formatting http http.server http.server.responses io json
 kernel multiline namespaces present sequences strings
 zplprinter.utils ;
 IN: zplprinter.server
@@ -22,10 +21,10 @@ SYMBOL: payload-handler
     <response> 400 >>code "text/plain" >>content-type "Invalid data" >>body ;
 
 : parse-request-payload ( -- assoc/f )
-    request get data>> [
-        dup byte-array? [ utf8 decode ] when
-        ! Jetzt sollte es ein String sein
-        json>
+    request get [
+        data>> [
+            data>> [ [ json> ] ignore-errors ] [ f ] if*
+        ] [ f ] if*
     ] [ f ] if* ;
 
 :: log-webhook-call ( data -- )
