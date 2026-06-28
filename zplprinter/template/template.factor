@@ -9,10 +9,13 @@ IN: zplprinter.template
 : %product ( data -- )
     { "product" } get-nested
     [ "^CF0,50^FO50,50^FD" % present % "^FS ^FO700,50^FD" % "N/A" % "^FS\n" % ] when* ;
-
 : %price ( data -- )
     { "details" "avg_price" } get-nested
-    [ "^CF0,30^FO50,115^FDDurchschnittspreis: " % present % "^FS\n" % ] when* ;
+    [
+        "^CF0,30^FO50,115^FDDurchschnittspreis: " %
+        "%.2f" sprintf %
+        " EUR^FS\n" %
+    ] when* ;
 
 : %stock ( data -- )
     dup { "details" "product" "min_stock_amount" } get-nested [
