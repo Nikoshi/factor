@@ -35,7 +35,7 @@ IN: zplprinter.template
     [ 1 = [ "^FO50,235^FDMove On Open^FS\n" % ] when ] when* ;
 
 : %barcode ( data -- )
-    "^FO50,275^GB650,3,3^FS\n^BY2,2,225\n^FO50,315^BC^FD" %
+    "^FO50,275^GB750,3,3^FS\n^BY2,2,225\n^FO50,315^BC^FD" %
     { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
 
 : %footer ( -- )
