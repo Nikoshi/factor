@@ -23,11 +23,9 @@ SYMBOL: payload-handler
 
 : parse-request-payload ( -- assoc/f )
     request get data>> [
-        ! Falls es ein String ist, in Bytes umwandeln, sonst als Byte-Array lassen
-        dup string? [ utf8 encode ] when
-        ! Jetzt sicher als UTF-8 dekodieren
-        utf8 decode
-        [ json> ] ignore-errors
+        dup byte-array? [ utf8 decode ] when
+        ! Jetzt sollte es ein String sein
+        json>
     ] [ f ] if* ;
 
 :: log-webhook-call ( data -- )
@@ -55,19 +53,19 @@ STRING: test-form-html
 <body>
     <h1>ZPL Test-Payload senden</h1>
     <textarea id='jsonPayload'>{
-      "product": "Testprodukt",
-      "grocycode": "grcy:p:1:x6a3fe19eb0644",
-      "details": {
-        "avg_price": 1.49,
-        "product": {
-          "min_stock_amount": 0,
-          "move_on_open": 1
-        },
-        "quantity_unit_stock": {
-          "name": "Packung"
-        }
-      }
-    }</textarea>
+  "product": "Testprodukt",
+  "grocycode": "grcy:p:1:x6a3fe19eb0644",
+  "details": {
+    "avg_price": 1.49,
+    "product": {
+      "min_stock_amount": 0,
+      "move_on_open": 1
+    },
+    "quantity_unit_stock": {
+      "name": "Packung"
+    }
+  }
+}</textarea>
     <br><br>
     <button onclick='sendTest()'>Payload an API senden</button>
     <h3>Server-Antwort (/):</h3>
