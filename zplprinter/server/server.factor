@@ -22,14 +22,12 @@ SYMBOL: payload-handler
     <response> 400 >>code "text/plain" >>content-type "Invalid data" >>body ;
 
 : parse-request-payload ( -- assoc/f )
-    request get [
-        data>> [
-            data>> [
-                dup string? [ latin1 encode ] when
-                utf8 decode
-                [ json> ] ignore-errors
-            ] [ f ] if*
-        ] [ f ] if*
+    request get data>> [
+        ! Falls es ein String ist, in Bytes umwandeln, sonst als Byte-Array lassen
+        dup string? [ utf8 encode ] when
+        ! Jetzt sicher als UTF-8 dekodieren
+        utf8 decode
+        [ json> ] ignore-errors
     ] [ f ] if* ;
 
 :: log-webhook-call ( data -- )
