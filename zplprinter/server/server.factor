@@ -51,19 +51,19 @@ STRING: test-form-html
 <body>
     <h1>ZPL Test-Payload senden</h1>
     <textarea id='jsonPayload'>{
-  "product": "Testprodukt",
-  "grocycode": "1234567890",
-  "details": {
-    "avg_price": 1.49,
-    "product": {
-      "min_stock_amount": 3,
-      "move_on_open": 1
-    },
-    "quantity_unit_stock": {
-      "name": "Stück"
-    }
-  }
-}</textarea>
+      "product": "Testprodukt",
+      "grocycode": "grcy:p:1:x6a3fe19eb0644",
+      "details": {
+        "avg_price": 1.49,
+        "product": {
+          "min_stock_amount": 0,
+          "move_on_open": 1
+        },
+        "quantity_unit_stock": {
+          "name": "Packung"
+        }
+      }
+    }</textarea>
     <br><br>
     <button onclick='sendTest()'>Payload an API senden</button>
     <h3>Server-Antwort (/):</h3>
@@ -76,7 +76,7 @@ STRING: test-form-html
             try {
                 const response = await fetch('/', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
                     body: document.getElementById('jsonPayload').value
                 });
                 const text = await response.text();
