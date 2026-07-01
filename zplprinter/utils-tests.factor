@@ -12,5 +12,3 @@ LH{ } CONSTANT: empty-payload
 [ t ] [ test-payload { "product" } get-nested "TestProduct" = ] unit-test
 [ f ] [ empty-payload { "product" } get-nested ] unit-test
 [ f ] [ test-payload { "details" "product" "min_stock_amount" } get-nested ] unit-test
-
-ABOUT: "zplprinter.tests.utils"
