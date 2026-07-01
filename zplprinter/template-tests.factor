@@ -13,5 +13,3 @@ LH{ { "product" "TestProduct" } } CONSTANT: no-code-payload
 [ t ] [ "1234567890" test-payload label>zpl subseq? ] unit-test
 [ expected-zpl ] [ test-payload label>zpl ] unit-test
 [ f ] [ "1234567890" no-code-payload label>zpl subseq? ] unit-test
-
-ABOUT: "zplprinter.tests.template"
