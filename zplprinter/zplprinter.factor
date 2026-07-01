@@ -4,7 +4,6 @@ zplprinter.template ;
 IN: zplprinter
 
 : process-label-payload ( assoc -- response )
-    dup log-webhook-call
     label>zpl send-zpl-to-printer
     [ "Successfully sent to printer." print flush ] with-console
     respond-ok ;
