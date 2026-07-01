@@ -102,7 +102,7 @@ M: test-form-action call-responder* ( path responder -- response )
 
 M: webhook-action call-responder* ( path responder -- response )
     2drop
-    [ "--- New Webhook Call --- " write current-utc-timestamp print "\n" print flush ] with-console
+    [ "--- New Webhook Call --- " write current-utc-timestamp print flush ] with-console
     parse-request-payload
     [
         dup log-webhook-call
