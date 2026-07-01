@@ -1,5 +1,5 @@
-USING: combinators formatting kernel make math present sequences zplprinter.utils ;
-
+USING: combinators formatting kernel make math math.order
+present sequences zplprinter.utils ;
 IN: zplprinter.template
 
 : %header ( data -- )
