@@ -34,9 +34,15 @@ IN: zplprinter.template
     { "details" "product" "move_on_open" } get-nested
     [ 1 = [ "^FO50,235^FDMove On Open^FS\n" % ] when ] when* ;
 
+: calc-x-pos ( string -- x )
+    length 11 * 381 swap - 0 max ;
+
+: %centered-barcode ( string -- )
+    dup calc-x-pos swap "^FO%d,315^BC^FD%s^FS\n" sprintf % ;
+
 : %barcode ( data -- )
-    "^FO50,275^GB750,3,3^FS\n^BY2,2,225\n^FO50,315^BC^FD" %
-    { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
+    "^FO50,275^GB750,3,3^FS\n^BY2,2,225\n" %
+    { "grocycode" } get-nested [ present %centered-barcode ] when* ;
 
 : %footer ( -- )
     "^XZ\n" % ;
