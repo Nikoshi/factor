@@ -4,66 +4,32 @@ A Factor-based webhook receiver that converts JSON payloads to ZPL (Zebra Progra
 
 ## Overview
 
-The zplprinter vocabulary provides a simple HTTP webhook endpoint that accepts JSON payloads containing product and stock information, renders them as ZPL labels, and transmits them to a connected ZPL printer.
+The project is split by responsibility:
 
-## Architecture
+- `zplprinter.utils` for safe payload traversal helpers
+- `zplprinter.template` for pure ZPL string generation
+- `zplprinter.client` for TCP delivery to the printer
+- `zplprinter.server` for HTTP parsing, routing, and logging
+- `zplprinter` for orchestration and the executable entry point
 
-### Core Vocabularies
-
-- `zplprinter` — Main implementation
-  - Robust payload parsing with fallback for missing fields
-  - ZPL rendering pipeline with composable template fragments
-  - HTTP webhook responder using Factor's http.server
-
-- `zplprinter.tests` — Unit tests
-  - Tests for rendering (`label>zpl`)
-  - Tests for response generation (`respond-ok`, `respond-bad`)
-  - Tests for helper functions (`get-nested`, `current-utc-timestamp`)
-
-- `zplprinter.dev` — Development utilities
-  - `start-dev-server` — Start server in background thread for F2-refresh workflow
-  - `stop-dev-server` — Stop the background server thread
-  - `dev-server-running?` — Check server status
-
-## Expected Payload Format
-
-The webhook expects POST requests with JSON bodies containing:
-
-```json
-{
-  "Product": "Product name",
-  "Grocycode": "Grocycode: e.g. grcy:p:1 or grcy:p:1:12345678abcd",
-  "Details": {
-    "AvgPrice": 9.99,
-    "Product": {
-      "MinStockAmount": 5
-    },
-    "QuantityUnitStock": {
-      "Name": "Unit"
-    },
-    "MoveOnOpen": 1
-  }
-}
-```
-
-Missing fields are handled gracefully and rendered as `<unknown>` in logs.
+This keeps the rendering logic testable without HTTP or socket concerns, while still exposing a simple `start-zpl-server` entry point.
 
 ## Usage
 
-### Production Server
+### Run the webhook receiver
 
-Start the webhook receiver on port 8080:
+Start the HTTP server on port 5000:
 
 ```factor
 USE: zplprinter ;
 start-zpl-server
 ```
 
-The server will listen for HTTP POST requests and forward rendered ZPL to the printer.
+The server accepts JSON POST requests at `/` and exposes a small test form at `/test`.
 
-### Development
+### Development server
 
-For interactive development with F2 refresh capability:
+For interactive development with a background thread:
 
 ```factor
 USE: zplprinter.dev ;
@@ -72,7 +38,7 @@ dev-server-running?    ! Check status
 stop-dev-server        ! Stop when done
 ```
 
-## Running Tests
+### Run tests
 
 Execute all unit tests:
 
@@ -81,42 +47,61 @@ USE: zplprinter.tests tools.test ;
 run-all-tests
 ```
 
-Tests cover rendering output, missing field handling, and HTTP response generation.
+The test suite is split by responsibility across `zplprinter.tests.utils`, `zplprinter.tests.template`, and `zplprinter.tests.server`, while `zplprinter.tests` just loads them.
 
-## Implementation Notes
+## Payload Format
 
-- **Robust parsing**: Uses `safe-at` and `get-nested` to handle incomplete/malformed payloads without crashing
-- **Template composition**: ZPL fragments (`%header`, `%product`, `%price`, etc.) are independently testable and composable
-- **Local variables**: Uses `::` and `:>` for clean stack management in complex words
-- **No retry logic**: Socket operations are kept simple; external supervision handles retries
-- **Logging**: Single-line format per webhook call for easy log searching
+The webhook expects a JSON body with at least these fields:
 
-## Dependencies
+```json
+{
+  "product": "Product name",
+  "grocycode": "1234567890",
+  "details": {
+    "avg_price": 9.99,
+    "product": {
+      "min_stock_amount": 5,
+      "move_on_open": 1
+    },
+    "quantity_unit_stock": {
+      "name": "Unit"
+    }
+  }
+}
+```
 
-- `http.server` — HTTP server and request handling
-- `json` — JSON parsing
-- `threads` — Background thread support (dev utilities)
-- `calendar` — UTC timestamp generation
-- `make` — String composition for ZPL rendering
+Missing fields are handled gracefully by the template and server helpers.
 
-## Printer Configuration
+## Notes
 
-Ensure the ZPL printer is accessible at `127.0.0.1:9100` (TCP). The current implementation:
-- Sends raw ZPL over TCP
-- Does not retry on socket failure
-- Does not validate printer responses
-
-For production use, consider implementing proper error handling and retry logic at the application level.
+- The printer endpoint is hardcoded to `127.0.0.1:9100`.
+- The client sends raw ZPL and does not implement retries.
+- The template vocabulary is side-effect free, which makes `label>zpl` easy to test directly.
 
 ## File Structure
 
 ```
 zplprinter/
-  zplprinter.factor           — Main implementation
-  zplprinter-docs.factor      — API documentation
-  zplprinter-tests.factor     — Unit tests
+  zplprinter.factor           - Orchestration and entry point
+  zplprinter-docs.factor      - Root API documentation
+  zplprinter-tests.factor     - Loads the split test vocabularies
+  utils-tests.factor          - Utility tests
+  template-tests.factor       - Template tests
+  server-tests.factor         - Server tests
+  client/
+    client.factor             - TCP printer client
+    client-docs.factor        - Client documentation
+  server/
+    server.factor             - HTTP server and routing
+    server-docs.factor        - Server documentation
+  template/
+    template.factor           - ZPL rendering
+    template-docs.factor      - Template documentation
+  utils/
+    utils.factor              - Safe assoc helpers
+    utils-docs.factor         - Utility documentation
   dev/
-    dev.factor                — Development utilities
-    dev-docs.factor           — Dev utility documentation
-  README.md                   — This file
+    dev.factor                - Development utilities
+    dev-docs.factor           - Dev utility documentation
+  README.md                   - This file
 ```
