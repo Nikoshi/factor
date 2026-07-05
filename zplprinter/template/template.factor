@@ -55,5 +55,5 @@ IN: zplprinter.template
         data %mhd
         data %move-on-open
         data %barcode
-        %footer
+             %footer
     ] "" make ;
