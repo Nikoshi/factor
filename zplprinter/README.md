@@ -75,7 +75,7 @@ Missing fields are handled gracefully by the template and server helpers.
 ## Notes
 
 - The printer endpoint is hardcoded to `127.0.0.1:9100`.
-- The client sends raw ZPL and does not implement retries.
+- The client sends raw ZPL and does implement retries.
 - The template vocabulary is side-effect free, which makes `label>zpl` easy to test directly.
 
 ## File Structure
