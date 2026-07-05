@@ -2,9 +2,8 @@ USING: combinators formatting kernel make math math.order
 present sequences zplprinter.utils ;
 IN: zplprinter.template
 
-: %header ( data -- )
-    "^XA\n^CI28\n" %
-    { "grocycode" } get-nested [ present % ] when* "^FS\n" % ;
+: %header ( -- )
+    "^XA\n^CI28\n" % ;
 
 : %product ( data -- )
     { "product" } get-nested
@@ -49,7 +48,7 @@ IN: zplprinter.template
 
 :: label>zpl ( data -- zpl )
     [
-        data %header
+             %header
         data %product
         data %price
         data %stock
