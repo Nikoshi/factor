@@ -44,7 +44,7 @@ IN: zplprinter.template
     { "grocycode" } get-nested [ present %centered-barcode ] when* ;
 
 : %footer ( -- )
-    "^XZ\n" % ;
+    "^FO675,750^FDIceTiger IT^FS^XZ\n" % ;
 
 :: label>zpl ( data -- zpl )
     [

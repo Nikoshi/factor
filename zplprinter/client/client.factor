@@ -4,7 +4,7 @@ IN: zplprinter.client
 <PRIVATE
 
 : (send-zpl) ( zpl -- )
-    "127.0.0.1" 9100 <inet4> utf8 [ print ] with-client ;
+    "10.229.157.108" 9100 <inet4> utf8 [ print ] with-client ;
 
 PRIVATE>
 
