@@ -3,7 +3,7 @@ present sequences zplprinter.utils ;
 IN: zplprinter.template
 
 : %header ( -- )
-    "^XA\n^CI28\n" % ;
+    "^XA\n^CI28\n^POI\n" % ;
 
 : %product ( data -- )
     { "product" } get-nested
