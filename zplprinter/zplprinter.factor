@@ -1,5 +1,5 @@
-USING: http http.server http.server.dispatchers io io.servers
-kernel namespaces prettyprint zplprinter.client zplprinter.server
+USING: calendar continuations destructors http http.server http.server.dispatchers io io.servers
+kernel namespaces prettyprint threads zplprinter.client zplprinter.server
 zplprinter.template ;
 IN: zplprinter
 
@@ -18,6 +18,10 @@ IN: zplprinter
         test-form-action new "test" add-responder
     main-responder set-global
     
-    5000 httpd wait-for-server ;
+    [ 5000 httpd ] in-thread
+    
+    [ [ 1 seconds sleep t ] loop ] [
+        drop "Stopping ZPL server..." print flush
+    ] recover ;
 
 MAIN: start-zpl-server
